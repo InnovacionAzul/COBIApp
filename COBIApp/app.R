@@ -50,6 +50,8 @@
 
 library(shiny)  # Load shiny package
 library(readxl) # Load package to read excel files
+library(tidyr)
+library(dplyr)
 
 # Generate the usier interface with ui
 ui <- fluidPage(                                                             # Page can be used in different devices
@@ -68,11 +70,19 @@ ui <- fluidPage(                                                             # P
       # Input separator
       selectInput(inputId='sepin',                                          # Establish an input dd
                    label='Separador',                                        # Label that user sees
-                   choices=c("Coma"=',',                                     # Establish allowed separators, comma
+                   choices=c("Coma"=',',                                     # Establish allowed separators
                              "Punto y coma"=';',                             # Semicolon
                              "Tabulación"='\t',                              # Tab
                              "Espacio"=" "),                                 # Space
                    ','),                                                     # Default to comma
+      h2("Opciones de Salida"),                                              # Header 2
+      # Output format field
+      selectInput(inputId='tipoout',                                         # Establish input Id
+                  label='Formato de salida',                                # Label that user sees
+                  choices=c("A",                                            # Format A
+                            "B",                                            # Format B
+                            "C"),                                           # Format C
+                  "A"),                                                     # default to A
       # Input file field
       fileInput(inputId ="dataset",                                          # Establish an input Id
                 label = "Seleccionar archivo",                               # Label that a user sees
@@ -81,24 +91,7 @@ ui <- fluidPage(                                                             # P
                   ".tsv",                                                    # allow tsv format
                   ".xls",                                                    # allow xcel format (old)
                   ".xlsx"                                                    # allow excel format (new)
-                )),                                                                     
-      
-      h2("Opciones de Salida"),                                              # Header 2
-      # Output format field
-      selectInput(inputId='tipoout',                                        # Establish input Id
-                   label='Formato de salida',                                # Label that user sees
-                   choices=c("A",                                            # Format A
-                             "B",                                            # Format B
-                             "C"),                                           # Format C
-                   "A"),                                                     # default to A
-      #Output separator
-      selectInput(inputId='sepout',                                         # Establish input Id
-                   label='Separador',                                        # Label that user sees
-                   choices=c("Coma"=',',                                     # Comma
-                             "Punto y coma"=';',                             # Semicolon
-                             "Tabulación"='\t',                              # Tab
-                             "Espacio"=" "),                                 # Space
-                   ',')                                                      # Default to comma
+                ))
       ),
     # Main panel structure
     mainPanel(
@@ -107,6 +100,11 @@ ui <- fluidPage(                                                             # P
                img(src="formatos.jpg",                                       # Load image of example
                    width="600px")),                                          # Set size of image
       tabPanel("Vista Previa",                                               # Label for tab
+               sliderInput(inputId="filas",
+                           label="Indique número de filas",
+                           min=0,
+                           max=100,
+                           value=10),
                tableOutput("table"),                                         # Generate field for the output
                downloadButton('downloadData',                                # Button to download data
                               'Descargar'))                                  # Label of button
@@ -124,21 +122,46 @@ server <- function(input, output) {
     inFile <- input$dataset
     if (is.null(inFile))
       return(NULL)
-    read.csv(inFile$datapath, sep = input$sepin)
-  })
-  
-  output$table <- renderTable({
-    # x=c("A","A")
-    # if (input$tipoin=="A"){
-    #   x[1]="A"
-    #   if (input$tipoout=="A"){
-    #     x[2]="A"
-    #   } else if (input$tipoout=="B"){
-    #     x[2]="B"
-    #   } else if (input$tipoout=="C"){
-    #     x[2]="C"
-    #   }
-    # } else if (input$tipoin=="B"){
+    dataset=read.csv(inFile$datapath, sep = input$sepin)
+    
+    if (input$tipoin=="A"){
+      a = dataset
+      if (input$tipoout=="A"){
+        a=a
+        return(a)
+      } else if (input$tipoout=="B"){
+        b=a
+        b$row=1:nrow(b)
+        b=b%>%
+          select(-Total) %>%
+          spread(Talla, X.100) %>%
+          select(-row) %>%
+          gather(ClaseTalla, Abundancia, -c(1:23)) %>%
+          filter(Abundancia>0)
+        #Las líneas de abajo asignan los nombres correctos a las celdas, e inlcuyen los promedios que deben de ser utilizados:
+        
+        ## Lo hacemos para la columna Talla (la que se usa en el análisis)
+        b$Talla=as.numeric(b$ClaseTalla)
+        b$Talla[b$ClaseTalla=="X0a5"]=2.5
+        b$Talla[b$ClaseTalla=="X6a10"]=8.5
+        b$Talla[b$ClaseTalla=="X11a20"]=15.5
+        b$Talla[b$ClaseTalla=="X21a30"]=25.5
+        b$Talla[b$ClaseTalla=="X31a40"]=35.5
+        
+        ## Y lo hacemos para la columna ClaseTalla
+        b$ClaseTalla[b$ClaseTalla=="X0a5"]="0a5"
+        b$ClaseTalla[b$ClaseTalla=="X6a10"]="6a10"
+        b$ClaseTalla[b$ClaseTalla=="X11a20"]="11a20"
+        b$ClaseTalla[b$ClaseTalla=="X21a30"]="21a30"
+        b$ClaseTalla[b$ClaseTalla=="X31a40"]="31a40"
+        b$ClaseTalla[b$Talla>=41]=">40"
+        
+        return(b)
+        
+      } else if (input$tipoout=="C"){
+        
+      }
+    } #else if (input$tipoin=="B"){
     #   x[1]="B"
     #   if (input$tipoout=="A"){
     #     x[2]="A"
@@ -157,14 +180,16 @@ server <- function(input, output) {
     #     x[2]="C"
     #   }
     # }
-    jc=head(datasetInput())
-    jc2=jc[,1,2,3,20:24]
+    
+  })
+  output$table <- renderTable({
+    head(datasetInput(), input$filas)
   })
   
   output$downloadData <- downloadHandler(
     filename = function(){paste(input$dataset)},
     content = function(file) {
-      write.csv(datasetInput(), file, sep=input$sepout)
+      write.csv(datasetInput(), file)
     }
   )
 }
