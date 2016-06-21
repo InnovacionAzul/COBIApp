@@ -58,21 +58,21 @@ ui <- fluidPage(                                                             # P
   sidebarLayout(                                                             # Establishes a layout
     sidebarPanel(                                                            # Creates a sidebar
       h2("Opciones de Entrada"),                                             # Header 1
+      # Input format field
+      selectInput(inputId='tipoin',                                         # Set an input Id
+                  label='Formato de entrada',                               # Label that user sees
+                  choices=c("A",                                            # Format A
+                            "B",                                            # Format B
+                            "C"),                                           # Format C
+                  "A"),                                                     # Set A as default
       # Input separator
-      radioButtons(inputId='sepin',                                          # Establish an input dd
+      selectInput(inputId='sepin',                                          # Establish an input dd
                    label='Separador',                                        # Label that user sees
                    choices=c("Coma"=',',                                     # Establish allowed separators, comma
                              "Punto y coma"=';',                             # Semicolon
                              "Tabulación"='\t',                              # Tab
                              "Espacio"=" "),                                 # Space
                    ','),                                                     # Default to comma
-      # Input format field
-      radioButtons(inputId='tipoin',                                         # Set an input Id
-                   label='Formato de entrada',                               # Label that user sees
-                   choices=c("A",                                            # Format A
-                             "B",                                            # Format B
-                             "C"),                                           # Format C
-                   "A"),                                                     # Set A as default
       # Input file field
       fileInput(inputId ="dataset",                                          # Establish an input Id
                 label = "Seleccionar archivo",                               # Label that a user sees
@@ -85,14 +85,14 @@ ui <- fluidPage(                                                             # P
       
       h2("Opciones de Salida"),                                              # Header 2
       # Output format field
-      radioButtons(inputId='tipoout',                                        # Establish input Id
+      selectInput(inputId='tipoout',                                        # Establish input Id
                    label='Formato de salida',                                # Label that user sees
                    choices=c("A",                                            # Format A
                              "B",                                            # Format B
                              "C"),                                           # Format C
                    "A"),                                                     # default to A
       #Output separator
-      radioButtons(inputId='sepout',                                         # Establish input Id
+      selectInput(inputId='sepout',                                         # Establish input Id
                    label='Separador',                                        # Label that user sees
                    choices=c("Coma"=',',                                     # Comma
                              "Punto y coma"=';',                             # Semicolon
@@ -128,16 +128,43 @@ server <- function(input, output) {
   })
   
   output$table <- renderTable({
-    jc <- datasetInput()
-    jc2 <- head(jc[,c(1,2,3,20:22, 24)])
-    
-    return(jc2)
+    # x=c("A","A")
+    # if (input$tipoin=="A"){
+    #   x[1]="A"
+    #   if (input$tipoout=="A"){
+    #     x[2]="A"
+    #   } else if (input$tipoout=="B"){
+    #     x[2]="B"
+    #   } else if (input$tipoout=="C"){
+    #     x[2]="C"
+    #   }
+    # } else if (input$tipoin=="B"){
+    #   x[1]="B"
+    #   if (input$tipoout=="A"){
+    #     x[2]="A"
+    #   } else if (input$tipoout=="B"){
+    #     x[2]="B"
+    #   } else if (input$tipoout=="C"){
+    #     x[2]="C"
+    #   }
+    # } else if (input$tipoin=="C"){
+    #   x[1]="C"
+    #   if (input$tipoout=="A"){
+    #     x[2]="A"
+    #   } else if (input$tipoout=="B"){
+    #     x[2]="B"
+    #   } else if (input$tipoout=="C"){
+    #     x[2]="C"
+    #   }
+    # }
+    jc=head(datasetInput())
+    jc2=jc[,1,2,3,20:24]
   })
   
   output$downloadData <- downloadHandler(
-    filename = function() { paste(input$dataset, '.csv', sep=input$sepout) },
+    filename = function(){paste(input$dataset)},
     content = function(file) {
-      write.csv(datasetInput(), file)
+      write.csv(datasetInput(), file, sep=input$sepout)
     }
   )
 }
