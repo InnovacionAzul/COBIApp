@@ -50,8 +50,9 @@
 
 library(shiny)  # Load shiny package
 library(readxl) # Load package to read excel files
-library(tidyr)
-library(dplyr)
+library(tidyr)  # Load tidyr package
+library(dplyr)  # Load dplyr package
+library(MPAtools) # Load MPAtools package
 
 # Generate the usier interface with ui
 ui <- fluidPage(                                                             # Page can be used in different devices
@@ -97,8 +98,12 @@ ui <- fluidPage(                                                             # P
     mainPanel(
       tabsetPanel(                                                           # Wraps multiple tabs
       tabPanel("Ejemplos de Formatos",                                       # Label for tab
-               img(src="formatos.jpg",                                       # Load image of example
-                   width="600px")),                                          # Set size of image
+               downloadButton('downloadA',                                # Button to download data
+                              'Formato A'),
+               downloadButton('downloadB',
+                              'Formato B'),
+               downloadButton('downloadC',
+                              'Formato C')),                                  # Label of button                                          # Set size of image
       tabPanel("Vista Previa",                                               # Label for tab
                sliderInput(inputId="filas",
                            label="Indique número de filas",
@@ -127,50 +132,22 @@ server <- function(input, output) {
     if (input$tipoin=="A"){
       a = dataset
       if (input$tipoout=="A"){
-        a=a
         return(a)
       } else if (input$tipoout=="B"){
-        b=a
-        b$row=1:nrow(b)
-        b=b%>%
-          select(-Total) %>%
-          spread(Talla, X.100) %>%
-          select(-row) %>%
-          gather(ClaseTalla, Abundancia, -c(1:23)) %>%
-          filter(Abundancia>0)
-        #Las líneas de abajo asignan los nombres correctos a las celdas, e inlcuyen los promedios que deben de ser utilizados:
-        
-        ## Lo hacemos para la columna Talla (la que se usa en el análisis)
-        b$Talla=as.numeric(b$ClaseTalla)
-        b$Talla[b$ClaseTalla=="X0a5"]=2.5
-        b$Talla[b$ClaseTalla=="X6a10"]=8.5
-        b$Talla[b$ClaseTalla=="X11a20"]=15.5
-        b$Talla[b$ClaseTalla=="X21a30"]=25.5
-        b$Talla[b$ClaseTalla=="X31a40"]=35.5
-        
-        ## Y lo hacemos para la columna ClaseTalla
-        b$ClaseTalla[b$ClaseTalla=="X0a5"]="0a5"
-        b$ClaseTalla[b$ClaseTalla=="X6a10"]="6a10"
-        b$ClaseTalla[b$ClaseTalla=="X11a20"]="11a20"
-        b$ClaseTalla[b$ClaseTalla=="X21a30"]="21a30"
-        b$ClaseTalla[b$ClaseTalla=="X31a40"]="31a40"
-        b$ClaseTalla[b$Talla>=41]=">40"
-        
-        return(b)
-        
+        a2b(a)
       } else if (input$tipoout=="C"){
-        
+        a2c(a)
       }
-    } #else if (input$tipoin=="B"){
-    #   x[1]="B"
-    #   if (input$tipoout=="A"){
-    #     x[2]="A"
-    #   } else if (input$tipoout=="B"){
-    #     x[2]="B"
-    #   } else if (input$tipoout=="C"){
-    #     x[2]="C"
-    #   }
-    # } else if (input$tipoin=="C"){
+    }  else if (input$tipoin=="B"){
+      b=dataset
+      if (input$tipoout=="A"){
+        b2a(b)
+      } else if (input$tipoout=="B"){
+        return(b)
+      } else if (input$tipoout=="C"){
+        b2c(b)
+      }
+     } #else if (input$tipoin=="C"){
     #   x[1]="C"
     #   if (input$tipoout=="A"){
     #     x[2]="A"
