@@ -1,0 +1,6 @@
+Dia;Mes;Ano;Estado;Comunidad;Sitio;Latitud;Longitud;Habitat;Zonificacion;TipoDeProteccion;ANP;BuzoMonitor;HoraInicialBuceo;HoraFinalBuceo;ProfundidadInicial_m;ProfundidadFinal_m;Temperatura_C;Visibilidad_m;Corriente;Transecto;Genero;Especie;GeneroEspecie;Sexo;0a5;6a10;11a20;21a30;31a40;>40;Talla;Total
+a;b;c;d;1;1;g;h;coral;j;k;l;m;n;o;p;q;r;s;t;u;Pomacanthus;paru;Pomacanthus paru;y;NA;2;2;NA;NA;NA;NA;4
+a;b;c;d;1;1;g;h;coral;j;k;l;m;n;o;p;q;r;s;t;u;Chromis;multilineata;Chromis multilineata;y;10;NA;NA;NA;NA;NA;NA;10
+a;b;c;d;1;2;g;h;coral;j;k;l;m;n;o;p;q;r;s;t;u;Epinephelus;striatus;Epinephelus striatus;y;NA;NA;NA;3;2;NA;NA;5
+a;b;c;d;1;2;g;h;alga;j;k;l;m;n;o;p;q;r;s;t;u;Epinephelus;morio;Epinephelus morio;y;NA;NA;NA;NA;NA;2;100;2
+a;b;c;d;2;1;g;h;coral;j;k;l;m;n;o;p;q;r;s;t;u;Sphyraena;argentea;Sphyraena argentea;y;NA;NA;NA;NA;3;1;45;4

@@ -92,19 +92,23 @@ ui <- fluidPage(                                                             # P
                   ".tsv",                                                    # allow tsv format
                   ".xls",                                                    # allow xcel format (old)
                   ".xlsx"                                                    # allow excel format (new)
-                ))
+                )),
+     h2("Ejemplos de Formatos"),                                       # Label for tab
+      downloadButton('downloadA',                                # Button to download data
+                     'Formato A'),
+      downloadButton('downloadB',
+                     'Formato B'),
+      downloadButton('downloadC',
+                     'Formato C'),
+     p("Se descargan en formato de valores separados por coma (*.csv). Al abrirlos en Excel:"),
+     p("1) seleccionar la columna A"),
+     p("2) Ir a la pestaña de 'Datos'"),
+     p("3) Seleccionar 'Texto en columnas'"),
+     p("4) Seleccionar 'delimitados' y dar click en siguiente"),
+     p("5) Seleccionar 'coma' y dar click en finalizar")
       ),
     # Main panel structure
-    mainPanel(
-      tabsetPanel(                                                           # Wraps multiple tabs
-      tabPanel("Ejemplos de Formatos",                                       # Label for tab
-               downloadButton('downloadA',                                # Button to download data
-                              'Formato A'),
-               downloadButton('downloadB',
-                              'Formato B'),
-               downloadButton('downloadC',
-                              'Formato C')),                                  # Label of button                                          # Set size of image
-      tabPanel("Vista Previa",                                               # Label for tab
+    mainPanel(h2("Vista Previa de Datos de Salida"),                                               # Label for tab
                sliderInput(inputId="filas",
                            label="Indique número de filas",
                            min=0,
@@ -112,8 +116,7 @@ ui <- fluidPage(                                                             # P
                            value=10),
                tableOutput("table"),                                         # Generate field for the output
                downloadButton('downloadData',                                # Button to download data
-                              'Descargar'))                                  # Label of button
-      )
+                              'Descargar')                                  # Label of button
       )
     )
   )
@@ -123,6 +126,33 @@ options(shiny.maxRequestSize = 100*1024^2)                                   #Ta
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  FormatoA=read.csv("www/A.csv", sep=";")
+  FormatoB=read.csv("www/B.csv", sep=";")
+  FormatoC=read.csv("www/C.csv", sep=";")
+  
+  output$downloadA <- downloadHandler(
+    filename = function(){paste("FormatoA", ".csv")},
+    content = function(file) {
+      write.csv(FormatoA, file)
+    }
+  )
+  
+  output$downloadB <- downloadHandler(
+    filename = function(){paste("FormatoB", ".csv")},
+    content = function(file) {
+      write.csv(FormatoB, file)
+    }
+  )
+  
+  output$downloadC <- downloadHandler(
+    filename = function(){paste("FormatoC", ".csv")},
+    content = function(file) {
+      write.csv(FormatoC, file)
+    }
+  )
+  
+  
   datasetInput=reactive({
     inFile <- input$dataset
     if (is.null(inFile))
@@ -147,16 +177,16 @@ server <- function(input, output) {
       } else if (input$tipoout=="C"){
         b2c(b)
       }
-     } #else if (input$tipoin=="C"){
-    #   x[1]="C"
-    #   if (input$tipoout=="A"){
-    #     x[2]="A"
-    #   } else if (input$tipoout=="B"){
-    #     x[2]="B"
-    #   } else if (input$tipoout=="C"){
-    #     x[2]="C"
-    #   }
-    # }
+     } else if (input$tipoin=="C"){
+      c=dataset
+      if (input$tipoout=="A"){
+        c2a(c)
+      } else if (input$tipoout=="B"){
+        c2b(c)
+      } else if (input$tipoout=="C"){
+        return(c)
+      }
+    }
     
   })
   output$table <- renderTable({
