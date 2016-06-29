@@ -57,7 +57,7 @@ library(MPAtools) # Load MPAtools package
 # Generate the usier interface with ui
 ui <- fluidPage(                                                             # Page can be used in different devices
   theme = "cerulean.css",
-  titlePanel("COBIApp - Convertir datos de monitoreo a diferentes formatos"),# Title for the page
+  titlePanel("COBIApp - Convertir datos de monitoreo a diferentes formatos (BETA)"),# Title for the page
   sidebarLayout(                                                             # Establishes a layout
     sidebarPanel(                                                            # Creates a sidebar
       h2("Opciones de Entrada"),                                             # Header 1
