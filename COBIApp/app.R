@@ -53,6 +53,7 @@ library(readxl) # Load package to read excel files
 library(tidyr)  # Load tidyr package
 library(dplyr)  # Load dplyr package
 library(MPAtools) # Load MPAtools package
+library(reshape) # Load reshape library
 
 # Generate the usier interface with ui
 ui <- fluidPage(                                                             # Page can be used in different devices
