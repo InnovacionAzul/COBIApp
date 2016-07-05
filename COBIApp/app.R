@@ -106,7 +106,9 @@ ui <- fluidPage(                                                             # P
      p("2) Ir a la pestaña de 'Datos'"),
      p("3) Seleccionar 'Texto en columnas'"),
      p("4) Seleccionar 'delimitados' y dar click en siguiente"),
-     p("5) Seleccionar 'coma' y dar click en finalizar")
+     p("5) Seleccionar 'coma' y dar click en finalizar"),
+     p(),
+     a("Ver el manual", href="http://jcvdav.github.io/COBIApp_Manual.pdf", target="_blank")
       ),
     # Main panel structure
     mainPanel(h2("Vista Previa de Datos de Salida"),                                               # Label for tab
@@ -135,21 +137,21 @@ server <- function(input, output) {
   output$downloadA <- downloadHandler(
     filename = function(){paste("FormatoA", ".csv")},
     content = function(file) {
-      write.csv(FormatoA, file)
+      write.csv(FormatoA, file, row.names=F)
     }
   )
   
   output$downloadB <- downloadHandler(
     filename = function(){paste("FormatoB", ".csv")},
     content = function(file) {
-      write.csv(FormatoB, file)
+      write.csv(FormatoB, file, row.names=F)
     }
   )
   
   output$downloadC <- downloadHandler(
     filename = function(){paste("FormatoC", ".csv")},
     content = function(file) {
-      write.csv(FormatoC, file)
+      write.csv(FormatoC, file, row.names=F)
     }
   )
   
@@ -197,7 +199,7 @@ server <- function(input, output) {
   output$downloadData <- downloadHandler(
     filename = function(){paste(input$dataset)},
     content = function(file) {
-      write.csv(datasetInput(), file)
+      write.csv(datasetInput(), file, row.names=F)
     }
   )
 }
