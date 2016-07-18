@@ -49,16 +49,15 @@
 ################################################################################################################
 
 library(shiny)  # Load shiny package
-library(readxl) # Load package to read excel files
-library(tidyr)  # Load tidyr package
-library(dplyr)  # Load dplyr package
 library(MPAtools) # Load MPAtools package
 library(reshape) # Load reshape library
+library(tidyr)  # Load tidyr package
+library(dplyr)  # Load dplyr package
 
 # Generate the usier interface with ui
 ui <- fluidPage(                                                             # Page can be used in different devices
   theme = "cerulean.css",
-  titlePanel("COBIApp - Convertir datos de monitoreo a diferentes formatos (BETA)"),# Title for the page
+  titlePanel("COBIApp - Convertir datos de monitoreo a diferentes formatos"),# Title for the page
   sidebarLayout(                                                             # Establishes a layout
     sidebarPanel(                                                            # Creates a sidebar
       h2("Opciones de Entrada"),                                             # Header 1
@@ -107,8 +106,9 @@ ui <- fluidPage(                                                             # P
      p("3) Seleccionar 'Texto en columnas'"),
      p("4) Seleccionar 'delimitados' y dar click en siguiente"),
      p("5) Seleccionar 'coma' y dar click en finalizar"),
+     a("Ver el manual", href="http://jcvdav.github.io/COBIApp_Manual.pdf", target="_blank"),
      p(),
-     a("Ver el manual", href="http://jcvdav.github.io/COBIApp_Manual.pdf", target="_blank")
+     p("Juan Carlos Villaseñor-Derbez:"), a("jvillasenor@bren.ucsb.edu", href="jvillasenor@bren.ucsb.edu", target="_blank")
       ),
     # Main panel structure
     mainPanel(h2("Vista Previa de Datos de Salida"),                                               # Label for tab
@@ -124,7 +124,7 @@ ui <- fluidPage(                                                             # P
     )
   )
 
-options(shiny.maxRequestSize = 100*1024^2)                                   #Tamaño máximo para archivos 100 Mb.
+options(shiny.maxRequestSize = 1000*1024^2)                                   #Tamaño máximo para archivos 1000 Mb.
   
 
 # Define server logic required to draw a histogram
