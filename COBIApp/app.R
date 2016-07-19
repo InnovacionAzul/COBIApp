@@ -20,8 +20,11 @@
 # de este tipo de análisis es aquellos que se presentan en las asambleas a los pescadores.
 #
 # CRÉDITOS
-# Licencia: MIT.
 # Desarrollada y mantenida por Juan Carlos Villaseñor Derbez (jvillasenor@bren.ucsb.edu)
+#
+# LICENCIA
+# Licencia tipo MIT (https://github.com/turfeffect/COBIApp/blob/master/LICENSE)
+# 
 # 
 # ENGLISH
 # COBIApp - Converts monitoring data across multiple formats
@@ -43,8 +46,10 @@
 # presents to fishers in the yearly "Asambleas".
 # 
 # CREDITS
-# License: MIT
 # Developed and maintained by: Juan Carlos Villaseñor Derbez (jvillasenor@bren.ucsb.edu)
+# 
+# LICENSE
+# Licensed under MIT (https://github.com/turfeffect/COBIApp/blob/master/LICENSE)
 #
 ################################################################################################################
 
@@ -87,12 +92,8 @@ ui <- fluidPage(                                                             # P
       # Input file field
       fileInput(inputId ="dataset",                                          # Establish an input Id
                 label = "Seleccionar archivo",                               # Label that a user sees
-                accept = c(                                                  # Establish allowed file formats
-                  ".csv",                                                    # allow csv format
-                  ".tsv",                                                    # allow tsv format
-                  ".xls",                                                    # allow xcel format (old)
-                  ".xlsx"                                                    # allow excel format (new)
-                )),
+                accept = ".csv"),                                                  # Establish allowed file formats
+      
      h2("Ejemplos de Formatos"),                                       # Label for tab
       downloadButton('downloadA',                                # Button to download data
                      'Formato A'),
@@ -108,7 +109,10 @@ ui <- fluidPage(                                                             # P
      p("5) Seleccionar 'coma' y dar click en finalizar"),
      a("Ver el manual", href="http://jcvdav.github.io/COBIApp_Manual.pdf", target="_blank"),
      p(),
-     p("Juan Carlos Villaseñor-Derbez:"), a("jvillasenor@bren.ucsb.edu", href="jvillasenor@bren.ucsb.edu", target="_blank")
+     p("Juan Carlos Villaseñor-Derbez:"),
+     a("jvillasenor@bren.ucsb.edu", href="jvillasenor@bren.ucsb.edu", target="_blank"),
+     p(),
+     a("Licensed under MIT", href="https://github.com/turfeffect/COBIApp/blob/master/LICENSE", target="_blank")
       ),
     # Main panel structure
     mainPanel(h2("Vista Previa de Datos de Salida"),                                               # Label for tab
@@ -117,6 +121,7 @@ ui <- fluidPage(                                                             # P
                            min=0,
                            max=100,
                            value=10),
+              textOutput(outputId = "message"),
                tableOutput("table"),                                         # Generate field for the output
                downloadButton('downloadData',                                # Button to download data
                               'Descargar')                                  # Label of button
@@ -161,6 +166,8 @@ server <- function(input, output) {
     if (is.null(inFile))
       return(NULL)
     dataset=read.csv(inFile$datapath, sep = input$sepin)
+    
+    output$message <- renderText(expr=DATAisFORMAT(data=dataset, format=input$tipoin))
     
     if (input$tipoin=="A"){
       a = dataset
