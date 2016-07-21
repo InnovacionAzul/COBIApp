@@ -116,12 +116,8 @@ ui <- fluidPage(                                                             # P
       ),
     # Main panel structure
     mainPanel(h2("Vista Previa de Datos de Salida"),                                               # Label for tab
-               sliderInput(inputId="filas",
-                           label="Indique número de filas",
-                           min=0,
-                           max=100,
-                           value=10),
               textOutput(outputId = "message"),
+              textOutput(outputId = "texto1"),
                tableOutput("table"),                                         # Generate field for the output
                downloadButton('downloadData',                                # Button to download data
                               'Descargar')                                  # Label of button
@@ -167,6 +163,8 @@ server <- function(input, output) {
       return(NULL)
     dataset=read.csv(inFile$datapath, sep = input$sepin)
     
+    output$texto1 <- renderText(exp="Se muestran las primeras 25 filas del documento")
+    
     output$message <- renderText(expr=DATAisFORMAT(data=dataset, format=input$tipoin))
     
     if (input$tipoin=="A"){
@@ -200,7 +198,7 @@ server <- function(input, output) {
     
   })
   output$table <- renderTable({
-    head(datasetInput(), input$filas)
+    head(datasetInput(), 25)
   })
   
   output$downloadData <- downloadHandler(
