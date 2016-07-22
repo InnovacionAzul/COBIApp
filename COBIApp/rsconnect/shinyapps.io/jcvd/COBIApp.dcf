@@ -2,8 +2,8 @@ name: COBIApp
 account: jcvd
 server: shinyapps.io
 appId: 111441
-bundleId: 511784
+bundleId: 513023
 url: https://jcvd.shinyapps.io/COBIApp/
-when: 1469121340.75021
+when: 1469203962.58553
 asMultiple: FALSE
 asStatic: FALSE

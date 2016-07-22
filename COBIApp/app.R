@@ -161,11 +161,11 @@ server <- function(input, output) {
     inFile <- input$dataset
     if (is.null(inFile))
       return(NULL)
-    dataset=read.csv(inFile$datapath, sep = input$sepin)
-    
-    output$texto1 <- renderText(exp="Se muestran las primeras 25 filas del documento")
+    dataset=read.csv(inFile$datapath, sep = input$sepin, stringsAsFactors = F)
     
     output$message <- renderText(expr=DATAisFORMAT(data=dataset, format=input$tipoin))
+    
+    output$texto1 <- renderText(exp="Se muestran las primeras 25 filas del documento")
     
     if (input$tipoin=="A"){
       a = dataset
@@ -197,6 +197,7 @@ server <- function(input, output) {
     }
     
   })
+  
   output$table <- renderTable({
     head(datasetInput(), 25)
   })
