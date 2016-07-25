@@ -65,6 +65,8 @@ ui <- fluidPage(                                                             # P
   titlePanel("COBIApp - Convertir datos de monitoreo a diferentes formatos"),# Title for the page
   sidebarLayout(                                                             # Establishes a layout
     sidebarPanel(                                                            # Creates a sidebar
+      img(src="cobi.jpg", width="60px"),
+      img(src="turf.jpg", width="60px"),
       h2("Opciones de Entrada"),                                             # Header 1
       # Input format field
       selectInput(inputId='tipoin',                                         # Set an input Id
